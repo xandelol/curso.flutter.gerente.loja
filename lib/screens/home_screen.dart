@@ -1,22 +1,97 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gerente_loja_app/blocs/user_bloc.dart';
+import 'package:gerente_loja_app/screens/login_screen.dart';
+import 'package:gerente_loja_app/tabs/users_tab.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() => _HomeScreenState();
+
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  int _page = 0;
+  PageController _pageController;
+
+  UserBloc _userBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    _userBloc = UserBloc();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[850],
-      body: Center(
-        child: Container(
-          margin: EdgeInsets.all(16),
-          height: 50,
-          child: RaisedButton(
-            onPressed: (){
-              FirebaseAuth.instance.signOut();
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.pinkAccent,
+          primaryColor: Colors.white,
+          textTheme: Theme.of(context).textTheme.copyWith(
+            caption: TextStyle(color: Colors.white54)
+          )
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _page,
+          onTap: (p){
+            _pageController.jumpToPage(p);
+          },
+          items: [
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.person
+                ),
+                title: Text(
+                  "Clientes",
+                )
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.shopping_cart,
+                  ),
+                  title: Text(
+                    "Pedidos",
+                  )
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.list,
+                  ),
+                  title: Text(
+                    "Produtos",
+                  )
+              ),
+          ]
+        ),
+      ),
+      body: SafeArea(
+        child: BlocProvider<UserBloc>(
+          bloc: _userBloc,
+          child: PageView(
+            controller: _pageController,
+            physics: NeverScrollableScrollPhysics(),
+            onPageChanged: (p){
+              setState(() {
+                _page = p;
+              });
             },
-            color: Colors.pinkAccent,
-            child: Text("Sair"),
-            textColor: Colors.white,
+            children: <Widget>[
+              UsersTab(),
+              Container(color: Colors.yellow,),
+              Container(color: Colors.green,),
+            ],
           ),
         ),
       ),
