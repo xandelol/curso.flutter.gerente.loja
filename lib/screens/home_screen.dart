@@ -1,8 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gerente_loja_app/blocs/orders_bloc.dart';
 import 'package:gerente_loja_app/blocs/user_bloc.dart';
 import 'package:gerente_loja_app/screens/login_screen.dart';
+import 'package:gerente_loja_app/tabs/orders_tab.dart';
 import 'package:gerente_loja_app/tabs/users_tab.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -17,12 +19,14 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
 
   UserBloc _userBloc;
+  OrdersBloc _ordersBloc;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _userBloc = UserBloc();
+    _ordersBloc = OrdersBloc();
   }
 
   @override
@@ -79,19 +83,22 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: BlocProvider<UserBloc>(
           bloc: _userBloc,
-          child: PageView(
-            controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
-            onPageChanged: (p){
-              setState(() {
-                _page = p;
-              });
-            },
-            children: <Widget>[
-              UsersTab(),
-              Container(color: Colors.yellow,),
-              Container(color: Colors.green,),
-            ],
+          child: BlocProvider(
+            bloc: _ordersBloc,
+            child: PageView(
+              controller: _pageController,
+              physics: NeverScrollableScrollPhysics(),
+              onPageChanged: (p){
+                setState(() {
+                  _page = p;
+                });
+              },
+              children: <Widget>[
+                UsersTab(),
+                OrdersTab(),
+                Container(color: Colors.green,),
+              ],
+            ),
           ),
         ),
       ),

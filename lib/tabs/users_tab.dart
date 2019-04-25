@@ -14,6 +14,7 @@ class UsersTab extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: TextField(
+            onChanged: _userBloc.onChangedSearch,
             style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
               hintText: "Pesquisar",
