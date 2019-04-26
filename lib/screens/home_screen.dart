@@ -102,6 +102,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      floatingActionButton: _buildFloating(),
     );
+  }
+
+  Widget _buildFloating(){
+    switch(_page){
+      case 0:
+        return null;
+      case 1:
+        break;
+      case 2:
+        break;
+    }
   }
 }

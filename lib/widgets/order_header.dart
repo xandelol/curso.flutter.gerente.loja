@@ -1,8 +1,21 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gerente_loja_app/blocs/user_bloc.dart';
 
 class OrderHeader extends StatelessWidget {
+
+  final DocumentSnapshot _order;
+
+  OrderHeader(this._order);
+
   @override
   Widget build(BuildContext context) {
+
+    final _userBloc = BlocProvider.of<UserBloc>(context);
+
+    final _user = _userBloc.getUser(_order.data["clientId"]);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -10,8 +23,8 @@ class OrderHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text("Alexandre"),
-              Text("Rua Flutter")
+              Text("${_user["name"]}"),
+              Text("${_user["address"]}")
             ],
           ),
         ),
@@ -19,11 +32,11 @@ class OrderHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Text(
-              "Preco Produtos",
+              "Produtos: R\$${_order.data["productsPrice"].toStringAsFixed(2)}",
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             Text(
-              "Preco total",
+              "Preco Total: R\$${_order.data["totalPrice"].toStringAsFixed(2)}",
               style: TextStyle(fontWeight: FontWeight.w500),
             )
           ],
