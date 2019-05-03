@@ -1,10 +1,12 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gerente_loja_app/blocs/orders_bloc.dart';
 import 'package:gerente_loja_app/blocs/user_bloc.dart';
 import 'package:gerente_loja_app/screens/login_screen.dart';
 import 'package:gerente_loja_app/tabs/orders_tab.dart';
+import 'package:gerente_loja_app/tabs/products_tab.dart';
 import 'package:gerente_loja_app/tabs/users_tab.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -96,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 UsersTab(),
                 OrdersTab(),
-                Container(color: Colors.green,),
+                ProductsTab(),
               ],
             ),
           ),
@@ -111,6 +113,34 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return null;
       case 1:
+        return SpeedDial(
+          child: Icon(
+            Icons.sort,
+          ),
+          backgroundColor: Colors.pinkAccent,
+          overlayOpacity: 0.4,
+          overlayColor: Colors.black,
+          children: [
+            SpeedDialChild(
+              child: Icon(Icons.arrow_downward, color: Colors.pinkAccent,),
+              backgroundColor: Colors.white,
+              label: "Concluidos Abaixo",
+              labelStyle: TextStyle(fontSize: 14),
+              onTap: (){
+                _ordersBloc.setOrderCriteria(SortCriteria.READY_LAST);
+              }
+            ),
+            SpeedDialChild(
+                child: Icon(Icons.arrow_upward, color: Colors.pinkAccent,),
+                backgroundColor: Colors.white,
+                label: "Concluidos Acima",
+                labelStyle: TextStyle(fontSize: 14),
+                onTap: (){
+                  _ordersBloc.setOrderCriteria(SortCriteria.READY_FIRST);
+                }
+            ),
+          ],
+        );
         break;
       case 2:
         break;
